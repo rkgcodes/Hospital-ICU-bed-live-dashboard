@@ -15,7 +15,8 @@ header.pack(pady=20)
 
 title = ctk.CTkLabel(
     header,
-    text="ICU BED LIVE DASHBOARD"
+    text="ICU BED LIVE DASHBOARD",
+    font=heading_font
 )
 title.pack()
 
@@ -28,49 +29,128 @@ top_frame.grid_columnconfigure(2, weight=1)
 
 
 total_card = ctk.CTkFrame(top_frame)
-total_card.pack()
+total_card.grid(
+    row=0,
+    column=0,
+    padx=15,
+    pady=15,
+    sticky="nsew"
+)
 
 
-total_label= ctk.CTkFont(size=18, weight="bold")
 total_label = ctk.CTkLabel(
     total_card,
     text="TOTAL BEDS",
-    anchor="w"
+    anchor="w",    
+    font=heading_font
 )
-total_label.grid(
-    row=0,
-    column=0,
-    padx=15,
-    pady=15,
-    sticky="nsew"
-)
+total_label.pack()
 
-totalnum_label = ctk.CTkFont(size=40, weight="bold")
+
 totalnum_label = ctk.CTkLabel(
     total_card,
     text="50",
-    anchor="w"
+    anchor="w",
+    font=number_font
     
 )
-totalnum_label.grid(
-    row=1,
+totalnum_label.pack()
+    
+
+
+available_card = ctk.CTkFrame(top_frame)
+available_card.grid(
+    row=0,
+    column=1,
+    padx=15,
+    pady=15,
+    sticky="nsew"
+)
+
+
+available_label = ctk.CTkLabel(
+    available_card,
+    text="AVAILABLE",
+    anchor="w",
+    font=heading_font
+)
+available_label.pack()
+
+
+
+availnum_label = ctk.CTkLabel(
+    available_card,
+    text="30",
+    anchor="w",
+    font=number_font
+)
+availnum_label.pack()
+
+inuse_card = ctk.CTkFrame(top_frame)
+inuse_card.grid(
+    row=0,
+    column=2,
+    padx=15,
+    pady=15,
+    sticky="nsew"
+)
+
+
+inuse_label = ctk.CTkLabel(
+    inuse_card,
+    text="IN USE",
+    anchor="w",
+    font=heading_font
+)
+inuse_label.pack()
+
+
+inusenum_label = ctk.CTkLabel(
+    inuse_card,
+    text="20",
+    anchor="w",
+    font=number_font
+    
+)
+inusenum_label.pack()
+
+
+ventilator_frame= ctk.CTkFrame(second)
+ventilator_frame.pack(fill="x")
+ventilator_frame.grid_columnconfigure(0, weight=1)
+ventilator_frame.grid_columnconfigure(1, weight=1)
+ventilator_frame.grid_columnconfigure(2, weight=1)
+
+
+venti_total_card = ctk.CTkFrame(ventilator_frame)
+venti_total_card.grid(
+    row=0,
     column=0,
     padx=15,
     pady=15,
     sticky="nsew"
 )
-
-
-available_card = ctk.CTkFrame(top_frame)
-available_card.pack()
-
-available_label= ctk.CTkFont(size=18, weight="bold")
-available_label = ctk.CTkLabel(
-    available_card,
-    text="AVAILABLE",
-    anchor="w"
+venti_total_label = ctk.CTkLabel(
+    venti_total_card,
+    text="WITH VENTILATOR",
+    anchor="w",    
+    font=heading_font
 )
-available_label.grid(
+venti_total_label.pack()
+
+
+ventitotalnum_label = ctk.CTkLabel(
+    venti_total_card,
+    text="10",
+    anchor="w",
+    font=number_font    
+)
+ventitotalnum_label.pack()
+    
+
+
+venti_inuse_card = ctk.CTkFrame(ventilator_frame)
+venti_inuse_card.grid(
     row=0,
     column=1,
     padx=15,
@@ -78,49 +158,48 @@ available_label.grid(
     sticky="nsew"
 )
 
-availnum_label=ctk.CTkFont(size=40, weight="bold")
-availnum_label = ctk.CTkLabel(
-    available_card,
-    text="30",
-    anchor="w"
-)
-availnum_label.grid(
-    row=1,
-    column=1,
-    padx=15,
-    pady=15,
-    sticky="nsew"
-)
-
-inuse_card = ctk.CTkFrame(top_frame)
-inuse_card.pack()
-
-inuse_label= ctk.CTkFont(size=18, weight="bold")
-inuse_label = ctk.CTkLabel(
-    inuse_card,
+venti_inuse_label = ctk.CTkLabel(
+    venti_inuse_card,
     text="IN USE",
-    anchor="w"
+    anchor="w",
+    font=heading_font
 )
-inuse_label.grid(
-    row=0,
-    column=2,
-    padx=15,
-    pady=15,
-    sticky="nsew"
-)
-inusenum_label=ctk.CTkFont(size=40, weight="bold")
-inusenum_label = ctk.CTkLabel(
-    inuse_card,
-    text="20",
-    anchor="w"
+venti_inuse_label.pack()
+
+ventiinusenum_label = ctk.CTkLabel(
+    venti_inuse_card,
+    text="5",
+    anchor="w",
+    font=number_font
     
 )
-inusenum_label.grid(
-    row=1,
+ventiinusenum_label.pack()
+
+
+withoutventi_card = ctk.CTkFrame(ventilator_frame)
+withoutventi_card.grid(
+    row=0,
     column=2,
     padx=15,
     pady=15,
     sticky="nsew"
 )
+
+withoutventi_label = ctk.CTkLabel(
+    withoutventi_card,
+    text="WITHOUT VENTILATOR",
+    anchor="w",
+    font=heading_font
+)
+withoutventi_label.pack()
+
+withoutventinum_label = ctk.CTkLabel(
+    withoutventi_card,
+    text="40",
+    anchor="w",
+    font=number_font
+    
+)
+withoutventinum_label.pack()
 
 second.mainloop()
