@@ -155,10 +155,30 @@ second_frame.pack(fill="x")
 second_frame.grid_columnconfigure(0, weight=1)
 
 
-def print_num():
-    num= numstr.get()
-    num=int(num)
-    result_label.configure(num)
+
+
+def print_num():    
+
+    try:
+        num = int(numstr.get())
+    
+
+        if (0<=num<=50):
+
+            available = 50 - num
+            inusenum_label.configure(text=str(num))
+            availnum_label.configure(text=str(available))
+            title2.configure(text="Last updated on: "+ datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
+            result_label.configure(text="")
+        
+        else:
+            result_label.configure(admin_card, text="⚠️ Enter a valid number")
+
+    except ValueError:
+                result_label.configure(admin_card, text="⚠️ Enter a valid number")
+
+    
+    
 
 
 admin_card = ctk.CTkFrame(second_frame, fg_color="grey", corner_radius=15)
