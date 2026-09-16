@@ -20,9 +20,7 @@ def get_occupied_beds():
     update_occupied(1, "ventilator", occupied)
 
 
-
-
-#result_label.configure(text="Hello " + entered_name)
+   #result_label.configure(text="Hello " + entered_name)
 
 
 
@@ -59,18 +57,6 @@ result_label.pack()
 
 
 
-
-
-print("values before update")
-
-cursor.execute(" SELECT * FROM icu_beds")
-rows = cursor.fetchall()
-
-for row in rows:
-    print(row)
-print()
-
-
 def update_occupied(level, bed_type, occupied):
 
     cursor.execute("""
@@ -78,7 +64,7 @@ def update_occupied(level, bed_type, occupied):
              WHERE level = ? AND bed_type = ?
         """, (level, bed_type))
         
-    rows = cursor.fetchone()
+    row = cursor.fetchone()
     total = row[0]
     
 
@@ -99,26 +85,10 @@ def update_occupied(level, bed_type, occupied):
        connection.commit()
                
     except ValueError:
-        print("Cannot be greater than total beds")
-
-        
+        print("Enter occupied beds number only")
+         
     
 
-#values after update
-print("values after update")
-
-cursor.execute(" SELECT * FROM icu_beds")
-rows = cursor.fetchall()
-
-for row in rows:
-    print(row)
-
-
-
 connection.close()
-
-
-
-
 
 result4.mainloop()

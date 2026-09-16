@@ -24,7 +24,7 @@ def update_occupied(level, bed_type, occupied):
              WHERE level = ? AND bed_type = ?
         """, (level, bed_type))
         
-    rows = cursor.fetchone()
+    row = cursor.fetchone()
     total = row[0]
     
 
@@ -50,7 +50,7 @@ def update_occupied(level, bed_type, occupied):
         
         
 
-update_occupied(1, "ventilator", "abc")
+update_occupied(1, "ventilator", 4)
 
 #values after update
 print("values after update")
