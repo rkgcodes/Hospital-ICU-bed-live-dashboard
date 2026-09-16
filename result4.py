@@ -20,7 +20,6 @@ def get_occupied_beds():
     update_occupied(1, "ventilator", occupied)
 
 
-   #result_label.configure(text="Hello " + entered_name)
 
 
 
@@ -65,6 +64,12 @@ def update_occupied(level, bed_type, occupied):
         """, (level, bed_type))
         
     row = cursor.fetchone()
+
+    if row is None:
+        result_label.configure(text="⚠️ ICU category not found")
+        return
+
+
     total = row[0]
     
 
@@ -72,11 +77,11 @@ def update_occupied(level, bed_type, occupied):
        occupied = int(occupied)         
                    
        if (occupied < 0):
-            result_label.configure(result4, text="⚠️ Occupied beds cannot be negative")
+            result_label.configure(text="⚠️ Occupied beds cannot be negative")
             return
                
        elif(occupied > total):
-            result_label.configure(result4, text="⚠️ Occupied beds cannot exceed total beds")            
+            result_label.configure(text="⚠️ Occupied beds cannot exceed total beds")            
             return
        
        cursor.execute("""
@@ -84,12 +89,12 @@ def update_occupied(level, bed_type, occupied):
                        SET  occupied = ? WHERE level = ? AND bed_type = ?
                """, (occupied, level, bed_type))
        connection.commit()
+       result_label.configure(text="✓ ICU status updated ")
                
     except ValueError:
-        result_label.configure(result4, text="⚠️ Enter occupied beds number only")
+        result_label.configure(text="⚠️ Enter occupied beds number only")
                  
     
 
-connection.close()
 
 result4.mainloop()
