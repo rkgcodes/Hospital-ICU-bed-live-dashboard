@@ -72,12 +72,13 @@ def update_occupied(level, bed_type, occupied):
        occupied = int(occupied)         
                    
        if (occupied < 0):
-            print("Occupied beds cannot be negative")
+            result_label.configure(result4, text="⚠️ Occupied beds cannot be negative")
             return
                
        elif(occupied > total):
-            print("Occupied beds cannot exceed total beds")
+            result_label.configure(result4, text="⚠️ Occupied beds cannot exceed total beds")            
             return
+       
        cursor.execute("""
                        UPDATE icu_beds
                        SET  occupied = ? WHERE level = ? AND bed_type = ?
@@ -85,8 +86,8 @@ def update_occupied(level, bed_type, occupied):
        connection.commit()
                
     except ValueError:
-        print("Enter occupied beds number only")
-         
+        result_label.configure(result4, text="⚠️ Enter occupied beds number only")
+                 
     
 
 connection.close()
