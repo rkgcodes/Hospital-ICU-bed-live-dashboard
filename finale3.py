@@ -345,30 +345,39 @@ admin_frame.grid(
 
 # change is required
 def refresh_dashboard():
-    title2.configure(text="Last updated on: "+ datetime.now().strftime("%d-%m-%Y %H:%M:%S"))       
+    vent = get_icu_status(1, "ventilator")
+    nonvent = get_icu_status(1, "non_ventilator")
 
-    if num is True:
-        num = int(numstr.get())
-        output= update_occupied(1, "ventilator", num)               
-        result_label.configure(text = output["message"])
-        update= get_icu_status(1, "ventilator")
-        venti_info1_label.configure(text=update["available"])
-        venti_info2_label.configure(text=f"Total : {update["total"]}")
-        venti_info3_label.configure(text=f"Occupied : {update["occupied"]}")
-               
-    
+    title2.configure(text="Last updated on: "+ datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
 
-  
+    venti_info1_label.configure(text=str(vent["available"]))
+    venti_info2_label.configure(text=f"Total : {vent['total']}")
+    venti_info3_label.configure(text=f"Occupied : {vent['occupied']}")
 
-    elif num1 is True:
-        num1 = int(numstr1.get())
-        output1= update_occupied(1, "non_ventilator", num1)        
-        result_label1.configure(text=output1["message"])
-        update1= get_icu_status(1, "non_ventilator")
-        nonventi_info1_label.configure(text=update1["available"])
-        nonventi_info2_label.configure(text=f"Total : {update1["total"]}")
-        nonventi_info3_label.configure(text=f"Occupied : {update1["occupied"]}")
-               
+    nonventi_info1_label.configure.configure(text=str(nonvent["available"]))
+    nonventi_info2_label.configure(text=f"Total : {nonvent['total']}")
+    nonventi_info3_label.configure(text=f"Occupied : {nonvent['occupied']}")
+
+def update_ventilator():
+    occupied = numstr.get()
+
+    result = update_occupied(1, "ventilator", occupied)
+
+    result_label.configure(text=result["message"])
+
+    if result["success"]:
+        refresh_dashboard()
+
+
+def update_non_ventilator():
+    occupied1 = numstr1.get()
+
+    result1 = update_occupied(1, "non_ventilator", occupied1)
+
+    result_label1.configure(text=result1["message"])
+
+    if result1["success"]:
+        refresh_dashboard()             
         
 
 
@@ -419,7 +428,7 @@ button = ctk.CTkButton(
     admin_card,
     text="UPDATE",
     font=heading_font,
-    command=refresh_dashboard
+    command=update_ventilator
     
 )
 button.grid(
@@ -472,7 +481,7 @@ button1 = ctk.CTkButton(
     admin_card,
     text="UPDATE",
     font=heading_font,
-    command=refresh_dashboard
+    command=update_non_ventilator
     
 )
 button1.grid(
@@ -493,8 +502,6 @@ result_label1.grid(
     sticky="w"
     
 )
-
-
 
 
 finale3.mainloop()
