@@ -7,15 +7,29 @@ ctk.set_appearance_mode("dark")
 finale3 = ctk.CTk()
 
 
-finale3.title("Polish exercise 2")
+finale3.title("Finale 3")
 finale3.geometry("1400x800")
 
 
 heading_font = ctk.CTkFont(size=18, weight="bold")
 update_font = ctk.CTkFont(size=14)
 number_font = ctk.CTkFont(size=48, weight="bold")
+
+finale3.grid_columnconfigure(0, weight=1)
+finale3.grid_columnconfigure(1, weight=1)
+finale3.grid_rowconfigure(0, weight=1)
+finale3.grid_rowconfigure(1, weight=1)
+finale3.grid_rowconfigure(2, weight=1)
+finale3.grid_rowconfigure(3, weight=1)
 header = ctk.CTkFrame(finale3, corner_radius=15)
-header.pack(pady=10)
+header.grid(
+    row=0,
+    column=0,    
+    columnspan=2,
+    padx=15,
+    pady=15,
+    sticky="nsew"
+)
 now = datetime.now()
 string_date = now.strftime("%d-%m-%Y %H:%M:%S")
 now = "Last updated on: "+string_date
@@ -48,10 +62,6 @@ def get_icu_status(level, bed_type):
     return status
 
 
-#print(get_icu_status(1, "ventilator"))
-#print(get_icu_status(1, "non_ventilator"))
-#print(get_icu_status(2, "ventilator"))
-
 # update_occupuied status
 def update_occupied(level, bed_type, occupied):
     with sqlite3.connect("hospital.db") as connection:
@@ -73,9 +83,7 @@ def update_occupied(level, bed_type, occupied):
         }
         return update
 
-
-    total = row[0]
-    
+    total = row[0]    
 
     try:
        occupied = int(occupied)         
@@ -116,13 +124,8 @@ def update_occupied(level, bed_type, occupied):
         return update            
 
 
-#output = update_occupied(1, "ventilator", "abc")
-#print (output["success"], ",", output["message"])
-
 
 # UI code begins here
-
-
 
 title = ctk.CTkLabel(
     header,
@@ -131,10 +134,10 @@ title = ctk.CTkLabel(
 )
 title.grid(
     row=0,
-    column=0,
-    padx=20,
-    pady=20,
-    sticky="w"    
+    column=0,    
+    padx=10,
+    pady=10,
+    sticky="nsew"    
 )
 title1 = ctk.CTkLabel(
     header,
@@ -143,9 +146,9 @@ title1 = ctk.CTkLabel(
 )
 title1.grid(
     row=0,
-    column=1,
-    padx=20,
-    pady=20,
+    column=1,    
+    padx=10,
+    pady=10,
     sticky="e"    
 )
 title2 = ctk.CTkLabel(
@@ -155,10 +158,10 @@ title2 = ctk.CTkLabel(
 )
 title2.grid(
     row=1,
-    column=0,
-    padx=20,
-    pady=20,
-    sticky="w"    
+    column=0,    
+    padx=10,
+    pady=10,
+    sticky="nsew"    
 )
 title3 = ctk.CTkLabel(
     header,
@@ -168,36 +171,24 @@ title3 = ctk.CTkLabel(
 )
 title3.grid(
     row=2,
-    column=0,
-    padx=20,
-    pady=20,
-    sticky="w"    
+    column=0,    
+    padx=10,
+    pady=10,
+    sticky="nsew" 
+        
 )
 
 
-
-finale3.grid_columnconfigure(0, weight=1)
-finale3.grid_columnconfigure(1, weight=1)
-finale3.grid_rowconfigure(0, weight=1)
 
 first_frame = ctk.CTkFrame(finale3, corner_radius=15)
 first_frame.grid(
-    row=0,
+    row=1,
     column=0,
     padx=15,
     pady=15,
     sticky="nsew"
 )
 
-
-second_frame = ctk.CTkFrame(finale3, corner_radius=15)
-second_frame.grid(
-    row=0,
-    column=1,
-    padx=15,
-    pady=15,
-    sticky="nsew"
-)
 
 venti_label = ctk.CTkLabel(
     first_frame,
@@ -212,15 +203,68 @@ venti_label.pack(pady=10)
 venti_card = ctk.CTkFrame(first_frame, fg_color="#2563eb", corner_radius=15)
 venti_card.pack(fill="x", padx=10, pady=10)
 
-
+avail= get_icu_status(1, "ventilator")
 venti_info_label = ctk.CTkLabel(
     venti_card,
-    text="VENTILATOR info",
+    text="AVAILABLE",
     anchor="w",    
     font=heading_font
 )
 venti_info_label.pack(pady=10)
 
+venti_info1_label = ctk.CTkLabel(
+    venti_card,
+    text= avail["available"],
+    anchor="w",    
+    font=number_font
+)
+venti_info1_label.pack(pady=10)
+
+connection = sqlite3.connect("hospital.db")
+connection.row_factory = sqlite3.Row
+
+cursor = connection.cursor()
+
+cursor.execute("""
+             SELECT * FROM icu_beds
+             WHERE level = ? AND bed_type = ?
+        """, (1, "ventilator")
+)
+        
+row = cursor.fetchone()
+t=row["total"]
+o=row["occupied"]
+
+venti_info2_label = ctk.CTkLabel(
+    venti_card,
+    text=f"Total : {t}",
+    anchor="w",    
+    font=heading_font
+)
+venti_info2_label.pack(pady=10)
+
+
+venti_info3_label = ctk.CTkLabel(
+    venti_card,
+    text=f"Occupied : {o}",
+    anchor="w",    
+    font=heading_font
+)
+venti_info3_label.pack(pady=10)
+connection.close()
+
+
+
+# second frame code
+
+second_frame = ctk.CTkFrame(finale3, corner_radius=15)
+second_frame.grid(
+    row=1,
+    column=1,
+    padx=15,
+    pady=15,
+    sticky="nsew"
+)
 
 
 non_venti_label = ctk.CTkLabel(
@@ -235,48 +279,97 @@ non_venti_label.pack(pady=10)
 non_venti_card = ctk.CTkFrame(second_frame, fg_color="#7C3AED", corner_radius=15)
 non_venti_card.pack(fill="x", padx=10, pady=10)
 
-non_venti_info_label = ctk.CTkLabel(
-    non_venti_card,
-    text="WITHOUT VENTILATOR info",
+##
+nonavail= get_icu_status(1, "non_ventilator")
+nonventi_info_label = ctk.CTkLabel(
+   non_venti_card,
+    text="AVAILABLE",
     anchor="w",    
     font=heading_font
 )
-non_venti_info_label.pack(pady=10)
+nonventi_info_label.pack(pady=10)
+
+nonventi_info1_label = ctk.CTkLabel(
+    non_venti_card,
+    text= nonavail["available"],
+    anchor="w",    
+    font=number_font
+)
 
 
+nonventi_info1_label.pack(pady=10)
+
+connection = sqlite3.connect("hospital.db")
+connection.row_factory = sqlite3.Row
+
+cursor = connection.cursor()
+
+cursor.execute("""
+             SELECT * FROM icu_beds
+             WHERE level = ? AND bed_type = ?
+        """, (1, "non_ventilator")
+)
+        
+row = cursor.fetchone()
+t1=row["total"]
+o1=row["occupied"]
+
+nonventi_info2_label = ctk.CTkLabel(
+    non_venti_card,
+    text=f"Total : {t1}",
+    anchor="w",    
+    font=heading_font
+)
+nonventi_info2_label.pack(pady=10)
+
+
+nonventi_info3_label = ctk.CTkLabel(
+    non_venti_card,
+    text=f"Occupied : {o1}",
+    anchor="w",    
+    font=heading_font
+)
+nonventi_info3_label.pack(pady=10)
+connection.close()
 
 admin_frame= ctk.CTkFrame(finale3, corner_radius=15)
-admin_frame.pack(fill="x", expand=True)
-admin_frame.grid_columnconfigure(0, weight=1)
-admin_frame.grid_columnconfigure(1, weight=1)
-admin_frame.grid_columnconfigure(2, weight=1)
-admin_frame.grid_columnconfigure(3, weight=1)
+admin_frame.grid(
+    row=2,
+    column=0,
+    columnspan=2,
+    padx=15,
+    pady=15,
+    sticky="nsew"
+)
 
 
+# change is required
+def refresh_dashboard():
+    title2.configure(text="Last updated on: "+ datetime.now().strftime("%d-%m-%Y %H:%M:%S"))       
 
-
-def print_num():    
-
-    try:
+    if num is True:
         num = int(numstr.get())
+        output= update_occupied(1, "ventilator", num)               
+        result_label.configure(text = output["message"])
+        update= get_icu_status(1, "ventilator")
+        venti_info1_label.configure(text=update["available"])
+        venti_info2_label.configure(text=f"Total : {update["total"]}")
+        venti_info3_label.configure(text=f"Occupied : {update["occupied"]}")
+               
     
 
-        if (0<=num<=50):
+  
 
-            available = 50 - num
-            #inusenum_label.configure(text=str(num))
-            #availnum_label.configure(text=str(available))
-            title2.configure(text="Last updated on: "+ datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
-            result_label.configure(text="✓ Dashboard Updated")
+    elif num1 is True:
+        num1 = int(numstr1.get())
+        output1= update_occupied(1, "non_ventilator", num1)        
+        result_label1.configure(text=output1["message"])
+        update1= get_icu_status(1, "non_ventilator")
+        nonventi_info1_label.configure(text=update1["available"])
+        nonventi_info2_label.configure(text=f"Total : {update1["total"]}")
+        nonventi_info3_label.configure(text=f"Occupied : {update1["occupied"]}")
+               
         
-        else:
-            result_label.configure(admin_card, text="⚠️ Enter a valid number")
-
-    except ValueError:
-                result_label.configure(admin_card, text="⚠️ Enter a valid number")
-
-    
-    
 
 
 admin_card = ctk.CTkFrame(admin_frame, fg_color="#2b2b2b", corner_radius=15)
@@ -290,9 +383,10 @@ belowlabel = ctk.CTkLabel(
 belowlabel.grid(
     row=0,
     column=0,
+    columnspan=3,
     padx=20,
     pady=20,
-    sticky="w"
+    sticky="nsew"
     
 )
 
@@ -325,7 +419,7 @@ button = ctk.CTkButton(
     admin_card,
     text="UPDATE",
     font=heading_font,
-    command=print_num
+    command=refresh_dashboard
     
 )
 button.grid(
@@ -378,7 +472,7 @@ button1 = ctk.CTkButton(
     admin_card,
     text="UPDATE",
     font=heading_font,
-    command=print_num
+    command=refresh_dashboard
     
 )
 button1.grid(
