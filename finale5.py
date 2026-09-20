@@ -7,7 +7,7 @@ ctk.set_appearance_mode("dark")
 finale5 = ctk.CTk()
 
 
-finale5.title("Finale 3")
+finale5.title("Finale 5")
 finale5.geometry("1400x800")
 
 
@@ -242,27 +242,6 @@ refresh_level(level2,2)
 
 
 
-def update_ventilator():
-    occupied = upd["vent"]
-
-    result = update_occupied(1, "ventilator", occupied)
-
-    upd["label"].configure(text=result["message"])
-
-    if result["success"]:
-        refresh_dashboard()
-
-
-def update_non_ventilator():
-    occupied1 = upd["nonvent"]
-
-    result1 = update_occupied(1, "non_ventilator", occupied1)
-
-    upd["label1"].configure(text=result1["message"])
-
-    if result1["success"]:
-        refresh_dashboard()             
-        
 
 
 
@@ -325,30 +304,7 @@ def open_admin():
         
     )
     
-    button = ctk.CTkButton(
-            admin_card,
-            text="UPDATE",
-            font=heading_font,
-            command=update_ventilator
-        
-    )
-    button.grid(
-            row=1,
-            column=2,
-            padx=20,
-            pady=20,
-            sticky="w"
-        
-    )
     
-    result_label = ctk.CTkLabel(admin_card, text="")
-    result_label.grid(
-            row=1,
-            column=3,
-            padx=20,
-            pady=20,
-            sticky="w"
-    )
 
     adminlabel1 = ctk.CTkLabel(
     admin_card,
@@ -375,6 +331,53 @@ def open_admin():
            
     )
 
+    
+    def update_ventilator():
+        occupied = numstr.get()
+
+        result = update_occupied(1, "ventilator", occupied)
+
+        result_label.configure(text=result["message"])
+
+        if result["success"]:
+            refresh_dashboard()
+
+
+    def update_non_ventilator():
+        occupied1 = numstr1.get()
+
+        result1 = update_occupied(1, "non_ventilator", occupied1)
+
+        result_label1.configure(text=result1["message"])
+
+        if result1["success"]:
+            refresh_dashboard()
+
+
+    button = ctk.CTkButton(
+        admin_card,
+        text="UPDATE",
+        font=heading_font,
+        command=update_ventilator
+            
+    )
+    button.grid(
+        row=1,
+        column=2,
+        padx=20,
+        pady=20,
+        sticky="w"
+            
+    )
+        
+    result_label = ctk.CTkLabel(admin_card, text="")
+    result_label.grid(
+        row=1,
+        column=3,
+        padx=20,
+        pady=20,
+        sticky="w"
+    )
     button1 = ctk.CTkButton(
         admin_card,
         text="UPDATE",
@@ -398,13 +401,8 @@ def open_admin():
         padx=20,
         pady=20,
         sticky="w"    
-    )
-    return{
-        "vent" : numstr,
-        "nonvent" : numstr1,
-        "label" : result_label,
-        "label1" : result_label1
-}
+    )             
+        
 
 
 
@@ -418,7 +416,7 @@ admin_button.pack()
 
 
 
-upd = open_admin()
+
 
 
 
@@ -431,29 +429,6 @@ def refresh_dashboard():
     title2.configure(text="Last updated on: "+ datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
 
     
-
-def update_ventilator():
-    occupied = upd["vent"]
-
-    result = update_occupied(1, "ventilator", occupied)
-
-    upd["label"].configure(text=result["message"])
-
-    if result["success"]:
-        refresh_dashboard()
-
-
-def update_non_ventilator():
-    occupied1 = upd["nonvent"]
-
-    result1 = update_occupied(1, "non_ventilator", occupied1)
-
-    upd["label1"].configure(text=result1["message"])
-
-    if result1["success"]:
-        refresh_dashboard()             
-        
-
 
 
 
