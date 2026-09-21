@@ -4,28 +4,28 @@ from datetime import datetime
 
 ctk.set_appearance_mode("dark")
 
-finale5 = ctk.CTk()
+finale6 = ctk.CTk()
 
 
-finale5.title("Finale 5")
-finale5.geometry("1400x800")
+finale6.title("Finale 6")
+finale6.geometry("1400x800")
 
 
-heading_font = ctk.CTkFont(size=24, weight="bold")
+heading_font = ctk.CTkFont(size=21, weight="bold")
 update_font = ctk.CTkFont(size=18)
-number_font = ctk.CTkFont(size=70, weight="bold")
+available_font = ctk.CTkFont(size=54, weight="bold")
 
 
-finale5.grid_rowconfigure(0, weight=1)
-finale5.grid_rowconfigure(1, weight=1)
-finale5.grid_rowconfigure(2, weight=1)
-finale5.grid_rowconfigure(3, weight=1)
+finale6.grid_rowconfigure(0, weight=1)
+finale6.grid_rowconfigure(1, weight=1)
+finale6.grid_rowconfigure(2, weight=1)
+finale6.grid_rowconfigure(3, weight=1)
 
-header = ctk.CTkFrame(finale5, corner_radius=15)
-header.pack()
+header = ctk.CTkFrame(finale6, corner_radius=15)
+header.pack(pady=10)
 now = datetime.now()
 string_date = now.strftime("%d-%m-%Y %H:%M:%S")
-now = "Last updated on: "+string_date
+now = "Updated : "+string_date
 
 
 
@@ -119,27 +119,61 @@ def update_occupied(level, bed_type, occupied):
 
 
 
-# UI code begins here
 
 title = ctk.CTkLabel(
     header,
-    text="ICU BED LIVE DASHBOARD",
+    text="AROGYA HOSPITAL & RESEARCH CENTRE",
     font=heading_font
 )
-title.pack()
+title.grid(
+    row=0,
+    column=0,    
+    padx=10,
+    pady=10,
+    sticky="nsew"    
+)
 title1 = ctk.CTkLabel(
     header,
     text="● LIVE",
     font=heading_font
 )
-title1.pack()
+title1.grid(
+    row=0,
+    column=1,    
+    padx=10,
+    pady=10,
+    sticky="e"    
+)
 title2 = ctk.CTkLabel(
+    header,
+    text="ICU BED AVAILABILITY",
+    font=heading_font,
+    
+)
+title2.grid(
+    row=1,
+    column=0,    
+    padx=10,
+    pady=10,
+    sticky="w" 
+        
+)
+title3 = ctk.CTkLabel(
     header,
     font=update_font,
     text=now
 )
-title2.pack()
+title3.grid(
+    row=1,
+    column=1,    
+    padx=10,
+    pady=10,
+    sticky="e"    
+)
 
+
+
+# UI code begins here
 
 
 def create_icu_card(parent, title, column):
@@ -148,32 +182,37 @@ def create_icu_card(parent, title, column):
 
     title_label = ctk.CTkLabel(
         card,
-        text=title
+        text=title,
+        font=update_font
     )
 
     available_heading = ctk.CTkLabel(
         card,
-        text="AVAILABLE"
+        text="AVAILABLE",
+        font=heading_font
     )
 
     available_label = ctk.CTkLabel(
         card,
-        text="0"
+        text="0",
+        font=available_font
     )
 
     total_label = ctk.CTkLabel(
         card,
-        text="Total : 0"
+        text="Total : 0",
+        font=update_font
     )
 
     occupied_label = ctk.CTkLabel(
         card,
-        text="Occupied : 0"
+        text="Occupied : 0",
+        font=update_font
     )
 
     
-    title_label.pack(pady=10)
-    available_heading.pack(pady=10)    
+    title_label.pack(padx=10, pady=10)
+    available_heading.pack(padx=10, pady=10)    
     card.grid(
     row=0,
     column=column,
@@ -197,7 +236,8 @@ def create_level(parent, level):
 
     level_label = ctk.CTkLabel(
         level_frame,
-        text=f"LEVEL {level}"
+        text=f"LEVEL {level}",
+        font=heading_font
     )
     
     cards_frame = ctk.CTkFrame(level_frame) 
@@ -228,8 +268,8 @@ def refresh_card(card, level, bed_type):
 
 
     
-level1 = create_level(finale5, 1)  
-level2 = create_level(finale5, 2)
+level1 = create_level(finale6, 1)  
+level2 = create_level(finale6, 2)
 
 
 def refresh_level(level_cards, level):
@@ -247,7 +287,7 @@ refresh_level(level2,2)
 
 
 def open_admin():
-    admin_window = ctk.CTkToplevel(finale5)
+    admin_window = ctk.CTkToplevel(finale6)
 
     admin_window.title("ICU Admin")
     admin_window.geometry("700x300")
@@ -408,7 +448,7 @@ def open_admin():
 
 
 admin_button = ctk.CTkButton(
-    finale5,
+    finale6,
     text="ADMIN",
     command=open_admin
 )
@@ -434,4 +474,4 @@ def refresh_dashboard():
 
 
 
-finale5.mainloop()
+finale6.mainloop()
