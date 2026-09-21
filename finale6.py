@@ -252,26 +252,24 @@ def create_level(parent, level):
         message_label = ctk.CTkLabel(
             level_frame,
             text="ICU FACILITY NOT AVAILABLE",
-            font=heading_font
+            font=update_font
         )
         message_label.pack(pady=10)
-        output = {         
-                    "ventilator": None,
-                    "non_ventilator": None
-        }
+        output = None
 
     else:
     
         vent_card = create_icu_card(cards_frame, "WITH VENTILATOR", 0)
         nonvent_card = create_icu_card(cards_frame, "WITHOUT VENTILATOR", 1)
+
+        cards_frame.grid_columnconfigure(0, weight=1)
+        cards_frame.grid_columnconfigure(1, weight=1)
+        cards_frame.pack()
         output = {         
             "ventilator": vent_card,
             "non_ventilator": nonvent_card
-        }    
+        }   
     
-    cards_frame.grid_columnconfigure(0, weight=1)
-    cards_frame.grid_columnconfigure(1, weight=1)
-    cards_frame.pack()
    
    
     return output
