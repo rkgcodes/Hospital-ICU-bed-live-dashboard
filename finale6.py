@@ -241,22 +241,40 @@ def create_level(parent, level):
     )
     
     cards_frame = ctk.CTkFrame(level_frame) 
-    
-    vent_card = create_icu_card(cards_frame, "WITH VENTILATOR", 0)
-    nonvent_card = create_icu_card(cards_frame, "WITHOUT VENTILATOR", 1)
-
     level_frame.pack(fill="x", pady=10)
     level_label.pack(pady=10)
+
+    x = get_icu_status(level, "ventilator")
+    y = get_icu_status(level, "non_ventilator")
+
+    if(x["total"]==0 and y["total"]==0):        
+        
+        message_label = ctk.CTkLabel(
+            level_frame,
+            text="ICU FACILITY NOT AVAILABLE",
+            font=heading_font
+        )
+        message_label.pack(pady=10)
+        output = {         
+                    "ventilator": None,
+                    "non_ventilator": None
+        }
+
+    else:
+    
+        vent_card = create_icu_card(cards_frame, "WITH VENTILATOR", 0)
+        nonvent_card = create_icu_card(cards_frame, "WITHOUT VENTILATOR", 1)
+        output = {         
+            "ventilator": vent_card,
+            "non_ventilator": nonvent_card
+        }    
     
     cards_frame.grid_columnconfigure(0, weight=1)
     cards_frame.grid_columnconfigure(1, weight=1)
     cards_frame.pack()
    
    
-    return {         
-        "ventilator": vent_card,
-        "non_ventilator": nonvent_card
-}
+    return output
 
 
 def refresh_card(card, level, bed_type):
@@ -273,8 +291,9 @@ level2 = create_level(finale6, 2)
 
 
 def refresh_level(level_cards, level):
-    refresh_card(level_cards["ventilator"], level, "ventilator")
-    refresh_card(level_cards["non_ventilator"], level, "non_ventilator")
+    if(level_cards is not None):
+        refresh_card(level_cards["ventilator"], level, "ventilator")
+        refresh_card(level_cards["non_ventilator"], level, "non_ventilator")
 
 
 refresh_level(level1,1)
