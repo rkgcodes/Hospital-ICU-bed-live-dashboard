@@ -5,6 +5,24 @@ connection = sqlite3.connect("hospital.db")
 cursor = connection.cursor()
 
 
+
+
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS icu_beds (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        level INTEGER,
+        bed_type TEXT,
+        total INTEGER,
+        occupied INTEGER
+    )
+""")
+
+cursor.execute("""
+    INSERT INTO icu_beds (level, bed_type, total, occupied)
+    VALUES (?, ?, ?, ?)
+""", (1, "ventilator", 3, 0))
+
+
 #pythonlogic to check & print one condition
 cursor.execute("SELECT * FROM icu_beds")
 rows = cursor.fetchall()

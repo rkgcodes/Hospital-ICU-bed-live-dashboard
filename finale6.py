@@ -286,6 +286,7 @@ def refresh_card(card, level, bed_type):
     
 level1 = create_level(finale6, 1)  
 level2 = create_level(finale6, 2)
+level3 = create_level(finale6, 3)
 
 
 def refresh_level(level_cards, level):
@@ -296,6 +297,7 @@ def refresh_level(level_cards, level):
 
 refresh_level(level1,1)
 refresh_level(level2,2)
+refresh_level(level2,3)
 
 
 
@@ -481,6 +483,7 @@ admin_button.pack()
 def refresh_dashboard():
     refresh_level(level1, 1)
     refresh_level(level2, 2)
+    refresh_level(level3, 3)
     
 
     title2.configure(text="Last updated on: "+ datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
