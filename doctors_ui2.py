@@ -30,7 +30,8 @@ doctors_ui2.grid_rowconfigure(0, weight=1)
 doctors_ui2.grid_rowconfigure(1, weight=1)
 doctors_ui2.grid_rowconfigure(2, weight=1)
 
-
+doctors_frame= ctk.CTkFrame(doctors_ui2, corner_radius=15)
+doctors_frame.pack()
 
 def get_todays_doctors(date):
     cursor.execute("""
@@ -104,6 +105,7 @@ def format_doctor_status(doctor):
 
     return stat
 
+ 
 
 
 
@@ -115,14 +117,10 @@ def create_doctor_card(parent, doctor, row, column):
         name = "● "+ doctor["title"] + " " + doctor["name"] 
 
     status= format_doctor_status(doctor)
-
-
-    doctors_frame= ctk.CTkFrame(parent, corner_radius=15)
-    doctors_frame.pack()
     
     
     card = ctk.CTkFrame(
-        doctors_frame,
+        parent,
         width=450,
         height=160,
         corner_radius=15
@@ -208,20 +206,30 @@ def create_doctor_card(parent, doctor, row, column):
         sticky="se"
     )
 
-    # changes
-
-    refresh_doctors(doctors_frame)
-
-
-        
-#doctors=get_todays_doctors(today)
-
-#for index, doctor in enumerate(doctors):
-    #row = index // 2
-    #column = index % 2
     
-    #create_doctor_card(doctors_ui2, doctor, row, column)
+        
+doctors=get_todays_doctors(today)
 
+for index, doctor in enumerate(doctors):
+    row = index // 2
+    column = index % 2
+    
+    create_doctor_card(doctors_frame, doctor, row, column)
+
+    
+def refresh_doctors(doctors_frame):
+
+    for widget in doctors_frame.winfo_children():
+        widget.destroy()
+
+    doctors = get_todays_doctors(today)
+
+    for index, doctor in enumerate(doctors):
+        row = index // 2
+        column = index % 2
+
+        create_doctor_card(doctors_frame, doctor, row, column)
+        
 
 def update_doctor_schedule(doctor_id, date, status, start_time, end_time):
     connection = sqlite3.connect("doctors.db")
@@ -411,29 +419,14 @@ def open_admin(doctors_frame):
     
 
 
-
-def refresh_doctors(doctors_frame):
-
-    for widget in doctors_frame.winfo_children():
-        widget.destroy()
-
-    doctors = get_todays_doctors(today)
-
-    for index, doctor in enumerate(doctors):
-        row = index // 2
-        column = index % 2
-
-        create_doctor_card(doctors_ui2, doctor, row, column)
-
-
-    admin_button = ctk.CTkButton(
-        doctors_ui2,
+admin_button = ctk.CTkButton(
+        doctors_frame,
         text="ADMIN",
         command=lambda: open_admin(doctors_frame)
     )
-    admin_button.grid(
+admin_button.grid(
         row=4,
-        column=3,    
+        column=3,
         padx=10,
         pady=10,
         sticky="nsew"
