@@ -220,11 +220,12 @@ def open_admin():
     admin_window = ctk.CTkToplevel(doctors_ui1)
 
     admin_window.title("Doctor Admin")
-    admin_window.geometry("700x300")
+    admin_window.geometry("700x600")
 
     ctk.CTkLabel(
         admin_window,
-        text="DOCTOR ADMIN PANEL"
+        text="DOCTOR ADMIN PANEL",
+        font=name_font
     ).pack(pady=30)
 
     admin_frame= ctk.CTkFrame(admin_window, corner_radius=15)
@@ -240,7 +241,9 @@ def open_admin():
     ]
 
     time=["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"]
-
+    connection = sqlite3.connect("doctors.db")
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
 
     cursor.execute("""
         SELECT
@@ -269,7 +272,7 @@ def open_admin():
     doctor_label = ctk.CTkLabel(
         admin_frame,
         text="DOCTOR",
-        font=name_font
+        font=boldlower_font
     )
     doctor_label.grid(row=0, column=0, padx=20, pady=20, sticky="nsew") 
 
@@ -283,7 +286,7 @@ def open_admin():
     status_label = ctk.CTkLabel(
         admin_frame,
         text="STATUS",
-        font=name_font
+        font=boldlower_font
     )
     status_label.grid(row=1, column=0, padx=20, pady=20, sticky="nsew")                   
     
@@ -301,7 +304,7 @@ def open_admin():
     start_label = ctk.CTkLabel(
         admin_frame,
         text="START TIME",
-        font=name_font
+        font=boldlower_font
     )
     start_label.grid(row=2, column=0, padx=20, pady=20, sticky="nsew") 
     
