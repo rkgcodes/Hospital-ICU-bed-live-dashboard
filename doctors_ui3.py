@@ -9,11 +9,11 @@ cursor = connection.cursor()
 
 ctk.set_appearance_mode("dark")
 
-doctors_ui2 = ctk.CTk()
+doctors_ui3 = ctk.CTk()
 
 
-doctors_ui2.title("Doctor's UI")
-doctors_ui2.geometry("1400x800")
+doctors_ui3.title("Doctor's UI")
+doctors_ui3.geometry("1400x800")
 
 today = datetime.now().strftime("%Y-%m-%d")
 lower_font = ctk.CTkFont(size=15)
@@ -22,15 +22,15 @@ name_font = ctk.CTkFont(size=18, weight="bold")
 available_font = ctk.CTkFont(size=54, weight="bold")
 
 
-doctors_ui2.grid_columnconfigure(0, weight=1)
-doctors_ui2.grid_columnconfigure(1, weight=1)
-doctors_ui2.grid_columnconfigure(2, weight=1)
+doctors_ui3.grid_columnconfigure(0, weight=1)
+doctors_ui3.grid_columnconfigure(1, weight=1)
+doctors_ui3.grid_columnconfigure(2, weight=1)
 
-doctors_ui2.grid_rowconfigure(0, weight=1)
-doctors_ui2.grid_rowconfigure(1, weight=1)
-doctors_ui2.grid_rowconfigure(2, weight=1)
+doctors_ui3.grid_rowconfigure(0, weight=1)
+doctors_ui3.grid_rowconfigure(1, weight=1)
+doctors_ui3.grid_rowconfigure(2, weight=1)
 
-doctors_frame= ctk.CTkFrame(doctors_ui2, corner_radius=15)
+doctors_frame= ctk.CTkFrame(doctors_ui3, corner_radius=15)
 doctors_frame.pack()
 
 def get_todays_doctors(date):
@@ -132,6 +132,7 @@ def create_doctor_card(parent, doctor, row, column):
     card.pack_propagate(False) 
 
 
+
     name_label = ctk.CTkLabel(
         card,
         text=name,
@@ -147,7 +148,7 @@ def create_doctor_card(parent, doctor, row, column):
     specialty_label = ctk.CTkLabel(
         card,
         text=doctor["specialty"],
-        font=name_font
+        font=boldlower_font
     )
 
     time_label = ctk.CTkLabel(
@@ -164,7 +165,8 @@ def create_doctor_card(parent, doctor, row, column):
         corner_radius=15
     )
 
-    
+    card.grid_columnconfigure(0, weight=1)
+    card.grid_columnconfigure(1, weight=0)
 
     card.grid(
         row=row,
@@ -177,6 +179,7 @@ def create_doctor_card(parent, doctor, row, column):
     name_label.grid(
         row=0,
         column=0,
+        columnspan=2,
         padx=10,
         pady=10,
         sticky="w"
@@ -184,30 +187,32 @@ def create_doctor_card(parent, doctor, row, column):
     qualification_label.grid(
         row=1,
         column=0,
+        columnspan=2,
         padx=10,
-        pady=10,
+        
         sticky="w"
     )    
     specialty_label.grid(
         row=2,
         column=0,
+        columnspan=2,
         padx=10,
-        pady=10,
+        
         sticky="w"
     )
     time_label.grid(
         row=3,
         column=0,
         padx=10,
-        pady=10,
-        sticky="sw"
+        pady=20,
+        sticky="w"
     )
     status_label.grid(
         row=3,
         column=1,
         padx=10,
-        pady=10,
-        sticky="se"
+        pady=20,
+        sticky="e"
     )
 
     
@@ -280,7 +285,7 @@ def update_doctor_schedule(doctor_id, date, status, start_time, end_time):
 
 
 def open_admin(doctors_frame):
-    admin_window = ctk.CTkToplevel(doctors_ui2)
+    admin_window = ctk.CTkToplevel(doctors_ui3)
 
     admin_window.title("Doctor Admin")
     admin_window.geometry("700x600")
@@ -332,17 +337,46 @@ def open_admin(doctors_frame):
         doctors[name]= row["id"]
 
 
+   
+        
+    def doctor_selected(choice):
+        selected_name = doctor_combo.get()
+        doctor_id = doctors[selected_name]
+        cursor.execute("""
+            SELECT doc_schedule.start_time, doc_schedule.end_time, doc_schedule.status                      
+                            
+            FROM doc_schedule
+                       
+            WHERE doc_schedule.doctor_id = ? AND doc_schedule.schedule_date = ?
+                    
+            """,(doctor_id, today))
+        selected_info = cursor.fetchone()        
+        
+        if(selected_info["start_time"] and selected_info["end_time"] ) is None:
+            status_combo.set(selected_info["status"])
+            start_combo.set("")
+            end_combo.set("")
+
+        else:
+            status_combo.set(selected_info["status"])
+            start_combo.set(selected_info["start_time"])
+            end_combo.set(selected_info["end_time"])
+
+
+
     doctor_label = ctk.CTkLabel(
         admin_frame,
         text="DOCTOR",
         font=boldlower_font
+        
     )
     doctor_label.grid(row=0, column=0, padx=20, pady=20, sticky="nsew") 
 
 
     doctor_combo = ctk.CTkComboBox(
         admin_frame,
-        values=list(doctors.keys())
+        values=list(doctors.keys()),
+        command=doctor_selected
     )
     doctor_combo.grid(row=0, column=1, padx=20, pady=20, sticky="nsew" )
 
@@ -424,11 +458,11 @@ def open_admin(doctors_frame):
 
 
 admin_button = ctk.CTkButton(
-        doctors_ui2,
+        doctors_ui3,
         text="ADMIN",
         command=lambda: open_admin(doctors_frame)
     )
-admin_button.pack()
+admin_button.pack(pady=20)
 
        
       
@@ -438,4 +472,4 @@ admin_button.pack()
         
 connection.close()
 
-doctors_ui2.mainloop()
+doctors_ui3.mainloop()

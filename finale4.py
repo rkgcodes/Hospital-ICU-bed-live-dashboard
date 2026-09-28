@@ -205,7 +205,7 @@ def create_level(parent, level):
     vent_card = create_icu_card(cards_frame, "WITH VENTILATOR", 0)
     nonvent_card = create_icu_card(cards_frame, "WITHOUT VENTILATOR", 1)
 
-    level_frame.pack(fill="x", pady=10)
+    
     level_label.pack(pady=10)
     
     cards_frame.grid_columnconfigure(0, weight=1)
