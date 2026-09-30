@@ -1,5 +1,8 @@
 import sqlite3
 import customtkinter as ctk
+heading_font = ctk.CTkFont(size=21, weight="bold")
+update_font = ctk.CTkFont(size=18)
+available_font = ctk.CTkFont(size=54, weight="bold")
 
 
 def get_icu_status(level, bed_type):
@@ -92,9 +95,9 @@ def update_occupied(level, bed_type, occupied):
 
 
 def create_icu_card(parent, title, column):
-    heading_font = ctk.CTkFont(size=21, weight="bold")
-    update_font = ctk.CTkFont(size=18)
-    available_font = ctk.CTkFont(size=54, weight="bold")
+    global heading_font
+    global update_font
+    global available_font
 
     card = ctk.CTkFrame(parent)
 
@@ -149,8 +152,8 @@ def create_icu_card(parent, title, column):
 
 
 def create_level(parent, level):
-    heading_font = ctk.CTkFont(size=21, weight="bold")
-    update_font = ctk.CTkFont(size=18)
+    global heading_font
+    global update_font
     
     level_frame = ctk.CTkFrame(parent)   
 
@@ -219,4 +222,184 @@ def refresh_dashboard(level1, level2, level3):
     refresh_level(level3, 3)
 
 
+def open_admin(parent):
+    global heading_font
+    global update_font
+    global available_font
+    admin_window = ctk.CTkToplevel(parent)
 
+    admin_window.title("ICU Admin")
+    admin_window.geometry("700x300")
+
+    ctk.CTkLabel(
+        admin_window,
+        text="ADMIN PANEL"
+    ).pack(pady=30)
+
+    admin_frame= ctk.CTkFrame(admin_window, corner_radius=15)
+    admin_frame.pack()
+
+    admin_card = ctk.CTkFrame(admin_frame, fg_color="#2b2b2b", corner_radius=15)
+    admin_card.pack()
+
+
+    belowlabel = ctk.CTkLabel(
+            admin_card,
+            text="ADMIN UPDATE ",
+            font=heading_font
+        )
+    belowlabel.grid(
+            row=0,
+            column=0,
+            columnspan=3,
+            padx=20,
+            pady=20,
+            sticky="nsew"
+      
+        )
+    
+    adminlabel = ctk.CTkLabel(
+            admin_card,
+            text="ICU Beds with ventilator in use: ",
+            anchor="w",
+            font=heading_font
+        )
+    adminlabel.grid(
+            row=1,
+            column=0,
+            padx=20,
+            pady=20,
+            sticky="w"
+        
+        )
+    
+    numstr = ctk.CTkEntry(admin_card)      
+    numstr.grid(
+            row=1,
+            column=1,
+            padx=20,
+            pady=20,
+            sticky="w"
+        
+    )
+    
+    
+
+    adminlabel1 = ctk.CTkLabel(
+    admin_card,
+        text="ICU Beds without ventilator in use: ",
+        anchor="w",
+        font=heading_font
+    )
+    adminlabel1.grid(
+        row=2,
+        column=0,
+        padx=20,
+        pady=20,
+        sticky="w"
+    
+    )
+
+    numstr1 = ctk.CTkEntry(admin_card)      
+    numstr1.grid(
+        row=2,
+        column=1,
+        padx=20,
+        pady=20,
+        sticky="w"
+           
+    )
+
+    
+    def update_ventilator():
+        occupied = numstr.get()
+
+        result = update_occupied(1, "ventilator", occupied)
+
+        result_label.configure(text=result["message"])
+
+        if result["success"]:
+            refresh_dashboard()
+
+
+    def update_non_ventilator():
+        occupied1 = numstr1.get()
+
+        result1 = update_occupied(1, "non_ventilator", occupied1)
+
+        result_label1.configure(text=result1["message"])
+
+        if result1["success"]:
+            refresh_dashboard()
+
+
+    button = ctk.CTkButton(
+        admin_card,
+        text="UPDATE",
+        font=heading_font,
+        command=update_ventilator
+            
+    )
+    button.grid(
+        row=1,
+        column=2,
+        padx=20,
+        pady=20,
+        sticky="w"
+            
+    )
+        
+    result_label = ctk.CTkLabel(admin_card, text="")
+    result_label.grid(
+        row=1,
+        column=3,
+        padx=20,
+        pady=20,
+        sticky="w"
+    )
+    button1 = ctk.CTkButton(
+        admin_card,
+        text="UPDATE",
+        font=heading_font,
+        command=update_non_ventilator
+    
+    )
+    button1.grid(
+        row=2,
+        column=2,
+        padx=20,
+        pady=20,
+        sticky="w"
+    
+    )
+
+    result_label1 = ctk.CTkLabel(admin_card, text="")
+    result_label1.grid(
+        row=2,
+        column=3,
+        padx=20,
+        pady=20,
+        sticky="w"    
+    )             
+
+
+
+def create_icu_screen(parent):
+    content = ctk.CTkScrollableFrame(parent)
+    content.pack(fill="both", expand=True, padx=10, pady=10)
+
+    level1 = create_level(content, 1)
+    level2 = create_level(content, 2)
+    level3 = create_level(content, 3)
+
+    def refresh():
+        refresh_dashboard(level1, level2, level3)
+
+    refresh()
+    admin_button = ctk.CTkButton(
+    parent,
+    text="ADMIN",
+    command=lambda: open_admin(parent)
+)
+    admin_button.pack()
+    return refresh
