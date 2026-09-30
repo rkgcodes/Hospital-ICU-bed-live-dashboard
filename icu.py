@@ -1,8 +1,6 @@
 import sqlite3
 import customtkinter as ctk
-heading_font = ctk.CTkFont(size=21, weight="bold")
-update_font = ctk.CTkFont(size=18)
-available_font = ctk.CTkFont(size=54, weight="bold")
+
 
 
 def get_icu_status(level, bed_type):
@@ -95,9 +93,9 @@ def update_occupied(level, bed_type, occupied):
 
 
 def create_icu_card(parent, title, column):
-    global heading_font
-    global update_font
-    global available_font
+    heading_font = ctk.CTkFont(size=21, weight="bold")
+    update_font = ctk.CTkFont(size=18)
+    available_font = ctk.CTkFont(size=54, weight="bold")
 
     card = ctk.CTkFrame(parent)
 
@@ -152,8 +150,9 @@ def create_icu_card(parent, title, column):
 
 
 def create_level(parent, level):
-    global heading_font
-    global update_font
+    heading_font = ctk.CTkFont(size=21, weight="bold")
+    update_font = ctk.CTkFont(size=18)
+    
     
     level_frame = ctk.CTkFrame(parent)   
 
@@ -222,14 +221,13 @@ def refresh_dashboard(level1, level2, level3):
     refresh_level(level3, 3)
 
 
-def open_admin(parent):
-    global heading_font
-    global update_font
-    global available_font
+def open_admin(parent, refresh):
+    heading_font1 = ctk.CTkFont(size=15)
+    
     admin_window = ctk.CTkToplevel(parent)
 
     admin_window.title("ICU Admin")
-    admin_window.geometry("700x300")
+    admin_window.geometry("900x450")
 
     ctk.CTkLabel(
         admin_window,
@@ -246,7 +244,7 @@ def open_admin(parent):
     belowlabel = ctk.CTkLabel(
             admin_card,
             text="ADMIN UPDATE ",
-            font=heading_font
+            font=heading_font1
         )
     belowlabel.grid(
             row=0,
@@ -262,7 +260,7 @@ def open_admin(parent):
             admin_card,
             text="ICU Beds with ventilator in use: ",
             anchor="w",
-            font=heading_font
+            font=heading_font1
         )
     adminlabel.grid(
             row=1,
@@ -289,7 +287,7 @@ def open_admin(parent):
     admin_card,
         text="ICU Beds without ventilator in use: ",
         anchor="w",
-        font=heading_font
+        font=heading_font1
     )
     adminlabel1.grid(
         row=2,
@@ -319,7 +317,8 @@ def open_admin(parent):
         result_label.configure(text=result["message"])
 
         if result["success"]:
-            refresh_dashboard()
+            refresh()
+            #refresh_dashboard()
 
 
     def update_non_ventilator():
@@ -330,13 +329,14 @@ def open_admin(parent):
         result_label1.configure(text=result1["message"])
 
         if result1["success"]:
-            refresh_dashboard()
+            refresh()
+            #refresh_dashboard()
 
 
     button = ctk.CTkButton(
         admin_card,
         text="UPDATE",
-        font=heading_font,
+        font=heading_font1,
         command=update_ventilator
             
     )
@@ -360,7 +360,7 @@ def open_admin(parent):
     button1 = ctk.CTkButton(
         admin_card,
         text="UPDATE",
-        font=heading_font,
+        font=heading_font1,
         command=update_non_ventilator
     
     )
@@ -399,7 +399,7 @@ def create_icu_screen(parent):
     admin_button = ctk.CTkButton(
     parent,
     text="ADMIN",
-    command=lambda: open_admin(parent)
+    command=lambda: open_admin(parent, refresh)
 )
     admin_button.pack()
     return refresh
