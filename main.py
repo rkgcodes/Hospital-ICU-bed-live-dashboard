@@ -1,4 +1,3 @@
-
 import customtkinter as ctk
 from doctors import create_doctors_screen, get_todays_doctors, refresh_doctors, create_doctor_card, open_admin
 from datetime import datetime

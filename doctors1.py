@@ -13,31 +13,8 @@ cursor = connection.cursor()
 today = datetime.now().strftime("%Y-%m-%d")
 
 def create_doctors_screen(parent):
-    heading_font = ctk.CTkFont(size=24, weight="bold")
-    inside_font = ctk.CTkFont(size=15, weight="bold")
-    
-        
-    title_label = ctk.CTkLabel(
-            parent,
-            text="AROGYA DIGITAL",
-            font=heading_font
-                        
-        )
-
-    card = ctk.CTkFrame(parent)
-        
-
-    inside_label= ctk.CTkLabel(
-            card,
-            text="TODAY'S  DOCTORS",
-            font=inside_font
-            
-        )
-    
-    
-    title_label.pack(padx=10, pady=10)
-    card.pack(padx=10, pady=10)
-    inside_label.pack(padx=10)
+    ...
+   
 
 
 
