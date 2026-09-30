@@ -10,9 +10,9 @@ cursor = connection.cursor()
 
 
 
-today = datetime.now().strftime("%Y-%m-%d")
 
 def create_doctors_screen(parent):
+    today = datetime.now().strftime("%Y-%m-%d")
     heading_font = ctk.CTkFont(size=24, weight="bold")
     inside_font = ctk.CTkFont(size=15, weight="bold")
     
@@ -38,6 +38,36 @@ def create_doctors_screen(parent):
     title_label.pack(padx=10, pady=10)
     card.pack(padx=10, pady=10)
     inside_label.pack(padx=10)
+
+    
+
+    parent.grid_columnconfigure(0, weight=1)
+    parent.grid_columnconfigure(1, weight=1)
+    parent.grid_columnconfigure(2, weight=1)
+
+    parent.grid_rowconfigure(0, weight=1)
+    parent.grid_rowconfigure(1, weight=1)
+    parent.grid_rowconfigure(2, weight=1)
+
+    doctors_frame= ctk.CTkFrame(parent, corner_radius=15)
+    doctors_frame.pack()
+
+
+    doctors=get_todays_doctors(today)
+
+    for index, doctor in enumerate(doctors):
+        row = index // 2
+        column = index % 2
+    
+        create_doctor_card(doctors_frame, doctor, row, column)
+
+
+    admin_button = ctk.CTkButton(
+        parent,
+        text="ADMIN",
+        command=lambda: open_admin(doctors_frame)
+    )
+    admin_button.pack(pady=10)
 
 
 
@@ -233,6 +263,7 @@ def create_doctor_card(parent, doctor, row, column):
     
     
 def refresh_doctors(doctors_frame):
+    today = datetime.now().strftime("%Y-%m-%d")
 
     for widget in doctors_frame.winfo_children():
         widget.destroy()
@@ -292,6 +323,7 @@ def update_doctor_schedule(doctor_id, date, status, start_time, end_time):
 
 
 def open_admin(parent):
+    today = datetime.now().strftime("%Y-%m-%d")
     
     boldlower_font = ctk.CTkFont(size=15, weight="bold")
     name_font = ctk.CTkFont(size=18, weight="bold")
@@ -362,15 +394,14 @@ def open_admin(parent):
             """,(doctor_id, today))
         selected_info = cursor.fetchone()        
         
-        if(selected_info["start_time"] and selected_info["end_time"] ) is None:
-            status_combo.set(selected_info["status"])
+        if selected_info is None:
+            status_combo.set("NOT_SCHEDULED")
             start_combo.set("")
             end_combo.set("")
-
         else:
-            status_combo.set(selected_info["status"])
-            start_combo.set(selected_info["start_time"])
-            end_combo.set(selected_info["end_time"])
+            status_combo.set(selected_info["status"] or "NOT_SCHEDULED")
+            start_combo.set(selected_info["start_time"] or "")
+            end_combo.set(selected_info["end_time"] or "")
 
 
 
@@ -464,14 +495,15 @@ def open_admin(parent):
             command=test_selection
         )
     update_button.grid(row=4, column=1, padx=20, pady=20, sticky="nsew" )
+
+   
     
 
 
-
+connection.close()
 
        
       
 
     
         
-connection.close()
