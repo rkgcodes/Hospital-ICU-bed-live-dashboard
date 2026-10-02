@@ -7,36 +7,67 @@ import sqlite3
 connection = sqlite3.connect("doctors.db")
 connection.row_factory = sqlite3.Row
 cursor = connection.cursor()
+today = datetime.now().strftime("%Y-%m-%d")
+
+from theme import (
+    BG_MAIN,
+    BG_CARD,
+    ACCENT,
+    ACCENT_HOVER,
+    TEXT_PRIMARY,
+    TEXT_SECONDARY,
+    TEXT_SPECIALTY,
+    CARD_BORDER,
+#available
+    AVAILABLE_BG,
+    AVAILABLE_HOVER,
+    AVAILABLE_TEXT,
+# Appointments Closed
+    CLOSED_BG,
+    CLOSED_HOVER,
+    CLOSED_TEXT,
+
+# Not Available
+    UNAVAILABLE_BG,
+    UNAVAILABLE_HOVER,
+    UNAVAILABLE_TEXT,
+
+# Not Scheduled
+    UNSCHEDULED_BG,
+    UNSCHEDULED_HOVER,
+    UNSCHEDULED_TEXT
+)
 
 
 
-
-def create_doctors_screen(parent):
+def create_doctors_screen(parent, fonts):
     today = datetime.now().strftime("%Y-%m-%d")
-    heading_font = ctk.CTkFont(size=24, weight="bold")
-    inside_font = ctk.CTkFont(size=15, weight="bold")
+    dateprint= datetime.now().strftime(" %d-%m-%Y %H:%M:%S ")
     
         
     title_label = ctk.CTkLabel(
             parent,
-            text="AROGYA DIGITAL",
-            font=heading_font
-                        
+            text="AROGYA HOSPITAL & RESEARCH CENTRE",
+            font=fonts["doctor"],
+            text_color=TEXT_PRIMARY      
+                                
         )
 
-    card = ctk.CTkFrame(parent)
+   
         
 
     inside_label= ctk.CTkLabel(
-            card,
+            parent,
             text="TODAY'S  DOCTORS",
-            font=inside_font
+            font=fonts["specialty"],
+            text_color=TEXT_SPECIALTY
+            
             
         )
     
     
     title_label.pack(padx=10, pady=10)
-    card.pack(padx=10, pady=10)
+    
     inside_label.pack(padx=10)
 
     
@@ -49,7 +80,7 @@ def create_doctors_screen(parent):
     parent.grid_rowconfigure(1, weight=1)
     parent.grid_rowconfigure(2, weight=1)
 
-    doctors_frame= ctk.CTkFrame(parent, corner_radius=15)
+    doctors_frame= ctk.CTkFrame(parent, corner_radius=15, fg_color=BG_MAIN)
     doctors_frame.pack()
 
 
@@ -59,7 +90,7 @@ def create_doctors_screen(parent):
         row = index // 2
         column = index % 2
     
-        create_doctor_card(doctors_frame, doctor, row, column)
+        create_doctor_card(doctors_frame, doctor, row, column, fonts)
 
 
     admin_button = ctk.CTkButton(
@@ -68,6 +99,17 @@ def create_doctors_screen(parent):
         command=lambda: open_admin(doctors_frame)
     )
     admin_button.pack(pady=10)
+
+    live_label= ctk.CTkLabel(
+        parent,
+        text=f"Schedule last verified: date and time:{dateprint}",
+        font=fonts["body"],
+        text_color=TEXT_PRIMARY
+                
+                
+    )
+        
+    live_label.pack(pady=10)
 
 
 
@@ -122,29 +164,41 @@ def format_doctor_status(doctor):
     if (doctor["status"] is None) or (doctor["status"] == "NOT_SCHEDULED"):
         stat =  {
             "text": "NOT SCHEDULED TODAY",
-            "color": "#9CA3AF",
+            "textcolor":UNSCHEDULED_TEXT,
+            "bgcolor": UNSCHEDULED_BG,
+            "hover":UNSCHEDULED_HOVER,
             "time": ""
+            
         }
                                
                          
     elif(doctor["status"]== "NOT_AVAILABLE"):        
         stat =  {
                 "text": "NOT AVAILABLE",
-                "color": "#DD2D21" ,
-                "time": ""
+                "textcolor":UNAVAILABLE_TEXT,
+                "bgcolor": UNAVAILABLE_BG,
+                "hover":UNAVAILABLE_HOVER,
+                "time": "",
+                
             }
     
     elif(doctor["status"]== "APPOINTMENTS_CLOSED"):        
         stat =  {
                     "text": "APPOINTMENTS CLOSED",
-                    "color": "#C67D16", 
+                    "textcolor":CLOSED_TEXT,
+                    "bgcolor": CLOSED_BG,
+                    "hover":CLOSED_HOVER, 
                     "time": time
+                    
                 }
     else:        
         stat =  {
             "text": "AVAILABLE",
-            "color": "#16A34A",
+            "textcolor":AVAILABLE_TEXT,
+            "bgcolor": AVAILABLE_BG,
+            "hover":AVAILABLE_HOVER,
             "time": time
+            
         }
 
     return stat
@@ -153,25 +207,25 @@ def format_doctor_status(doctor):
 
 
 
-def create_doctor_card(parent, doctor, row, column):
-    lower_font = ctk.CTkFont(size=15)
-    boldlower_font = ctk.CTkFont(size=15, weight="bold")
-    name_font = ctk.CTkFont(size=18, weight="bold")
-
-   
+def create_doctor_card(parent, doctor, row, column, fonts):
+    
+       
     if(doctor["credential_suffix"] is not None):
-        name = "● "+ doctor["title"] + " " + doctor["name"] + " " + f"({doctor["credential_suffix"]})"
+        name = doctor["title"] + " " + doctor["name"] + " " + f"({doctor["credential_suffix"]})"
     else:
-        name = "● "+ doctor["title"] + " " + doctor["name"] 
+        name = doctor["title"] + " " + doctor["name"] 
 
     status= format_doctor_status(doctor)
-    
+    status["time"]="🕒" + status["time"]
     
     card = ctk.CTkFrame(
         parent,
         width=450,
         height=160,
-        corner_radius=15
+        corner_radius=15,
+        fg_color=BG_CARD,
+        border_color=CARD_BORDER,
+        border_width=1
     )
     card.pack_propagate(False) 
 
@@ -180,32 +234,38 @@ def create_doctor_card(parent, doctor, row, column):
     name_label = ctk.CTkLabel(
         card,
         text=name,
-        font=name_font
+        font=fonts["doctor"],
+        text_color=TEXT_PRIMARY
     )
 
     qualification_label = ctk.CTkLabel(
         card,
         text=doctor["qualification"],
-        font=lower_font
+        font=fonts["body"],
+        text_color=TEXT_SECONDARY
     )
 
     specialty_label = ctk.CTkLabel(
         card,
         text=doctor["specialty"],
-        font=boldlower_font
+        font=fonts["specialty"],
+        text_color=TEXT_SPECIALTY
     )
-
+    separator = ctk.CTkFrame(card, height=1.5, fg_color=CARD_BORDER)
     time_label = ctk.CTkLabel(
         card,
         text= status["time"],
-        font=name_font
+        font=fonts["body"],
+        text_color=TEXT_SECONDARY
     )
 
     status_label = ctk.CTkLabel(
         card,
         text=status["text"],
-        font=boldlower_font,
-        fg_color= status["color"],
+        font= fonts["statusfont"],
+        text_color= TEXT_PRIMARY,               #status["textcolor"],  <------ can be changed to 
+        border_color= status["bgcolor"],
+        fg_color=status["hover"],
         corner_radius=15
     )
 
@@ -224,7 +284,7 @@ def create_doctor_card(parent, doctor, row, column):
         row=0,
         column=0,
         columnspan=2,
-        padx=10,
+        padx=(10,180),
         pady=10,
         sticky="w"
     )
@@ -244,19 +304,21 @@ def create_doctor_card(parent, doctor, row, column):
         
         sticky="w"
     )
+    
+    separator.grid(row=3, column=0, sticky="ew", padx=10, pady=(10,0))
     time_label.grid(
-        row=3,
+        row=4,
         column=0,
         padx=10,
-        pady=20,
+        pady=(10,0),
         sticky="w"
     )
     status_label.grid(
-        row=3,
-        column=1,
+        row=5,
+        column=0,
         padx=10,
-        pady=20,
-        sticky="e"
+        pady=(5,20),
+        sticky="w"
     )
 
     
@@ -327,7 +389,7 @@ def open_admin(parent):
     
     boldlower_font = ctk.CTkFont(size=15, weight="bold")
     name_font = ctk.CTkFont(size=18, weight="bold")
-    admin_window = ctk.CTkToplevel(parent)
+    admin_window = ctk.CTkToplevel(parent.winfo_toplevel())
 
     admin_window.title("Doctor Admin")
     admin_window.geometry("700x600")

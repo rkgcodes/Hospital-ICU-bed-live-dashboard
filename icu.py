@@ -1,6 +1,25 @@
 import sqlite3
 import customtkinter as ctk
 
+from theme import (
+    BG_MAIN,
+    BG_CARD,
+    ACCENT,
+    ACCENT_HOVER,
+    TEXT_PRIMARY,
+    TEXT_SECONDARY,
+    TEXT_SPECIALTY,
+    ICU_TYPE,     # cyan — WITH/WITHOUT VENTILATOR
+
+    AVAILABLE_TEXT, # green
+    TOTAL_TEXT,    # yellow
+    OCCUPIED_TEXT,  # soft red/coral
+
+    ICU_CARD,
+    ICU_BORDER,
+    
+   
+)
 
 
 def get_icu_status(level, bed_type):
@@ -92,46 +111,48 @@ def update_occupied(level, bed_type, occupied):
 
 
 
-def create_icu_card(parent, title, column):
-    heading_font = ctk.CTkFont(size=21, weight="bold")
-    update_font = ctk.CTkFont(size=18)
-    available_font = ctk.CTkFont(size=54, weight="bold")
-
-    card = ctk.CTkFrame(parent)
+def create_icu_card(parent, title, column, fonts):
+    
+    card = ctk.CTkFrame(parent, corner_radius=15, fg_color=ICU_CARD, border_color=ICU_BORDER, border_width=1)
 
     title_label = ctk.CTkLabel(
         card,
         text=title,
-        font=update_font
+        font=fonts["icuinfo"],
+        text_color=TEXT_PRIMARY
     )
 
     available_heading = ctk.CTkLabel(
         card,
         text="AVAILABLE",
-        font=heading_font
+        font=fonts["specialty"],
+        text_color=AVAILABLE_TEXT
     )
 
     available_label = ctk.CTkLabel(
         card,
         text="0",
-        font=available_font
+        font=fonts["available"],
+        text_color=AVAILABLE_TEXT
     )
 
     total_label = ctk.CTkLabel(
         card,
         text="Total : 0",
-        font=update_font
+        font=fonts["icuinfo"],
+        text_color=TOTAL_TEXT
     )
 
     occupied_label = ctk.CTkLabel(
         card,
         text="Occupied : 0",
-        font=update_font
+        font=fonts["icuinfo"],
+        text_color=OCCUPIED_TEXT
     )
 
     
-    title_label.pack(padx=10, pady=10)
-    available_heading.pack(padx=10, pady=10)    
+    title_label.pack(padx=10,pady=(15, 8))
+    available_heading.pack(padx=10, pady=(8, 0))    
     card.grid(
     row=0,
     column=column,
@@ -139,9 +160,9 @@ def create_icu_card(parent, title, column):
     pady=20,
     sticky="nsew"
 )
-    available_label.pack(pady=10)
-    total_label.pack(pady=10)
-    occupied_label.pack(pady=10)
+    available_label.pack(padx=10, pady=(0, 12))
+    total_label.pack(padx=10, pady=(8, 6))
+    occupied_label.pack(padx=10, pady=(6, 15))
     return {
     "available": available_label,
     "total": total_label,
@@ -149,20 +170,19 @@ def create_icu_card(parent, title, column):
 }
 
 
-def create_level(parent, level):
-    heading_font = ctk.CTkFont(size=21, weight="bold")
-    update_font = ctk.CTkFont(size=18)
+def create_level(parent, level, fonts):
+       
     
-    
-    level_frame = ctk.CTkFrame(parent)   
+    level_frame = ctk.CTkFrame(parent, fg_color=BG_MAIN)   
 
     level_label = ctk.CTkLabel(
         level_frame,
         text=f"LEVEL {level}",
-        font=heading_font
+        font=fonts["specialty"],
+        text_color=TEXT_SPECIALTY
     )
     
-    cards_frame = ctk.CTkFrame(level_frame) 
+    cards_frame = ctk.CTkFrame(level_frame, fg_color=BG_MAIN) 
     level_frame.pack(fill="x", pady=10)
     level_label.pack(pady=10)
 
@@ -174,15 +194,15 @@ def create_level(parent, level):
         message_label = ctk.CTkLabel(
             level_frame,
             text="ICU FACILITY NOT AVAILABLE",
-            font=update_font
+            font=fonts["icuinfo"]
         )
         message_label.pack(pady=10)
         output = None
 
     else:
     
-        vent_card = create_icu_card(cards_frame, "WITH VENTILATOR", 0)
-        nonvent_card = create_icu_card(cards_frame, "WITHOUT VENTILATOR", 1)
+        vent_card = create_icu_card(cards_frame, "WITH VENTILATOR", 0, fonts)
+        nonvent_card = create_icu_card(cards_frame, "WITHOUT VENTILATOR", 1, fonts)
 
         cards_frame.grid_columnconfigure(0, weight=1)
         cards_frame.grid_columnconfigure(1, weight=1)
@@ -237,7 +257,7 @@ def open_admin(parent, refresh):
     admin_frame= ctk.CTkFrame(admin_window, corner_radius=15)
     admin_frame.pack()
 
-    admin_card = ctk.CTkFrame(admin_frame, fg_color="#2b2b2b", corner_radius=15)
+    admin_card = ctk.CTkFrame(admin_frame, fg_color=BG_MAIN, corner_radius=15)
     admin_card.pack()
 
 
@@ -384,13 +404,33 @@ def open_admin(parent, refresh):
 
 
 
-def create_icu_screen(parent):
-    content = ctk.CTkScrollableFrame(parent)
+def create_icu_screen(parent, fonts):
+
+    content = ctk.CTkFrame(parent, fg_color=BG_MAIN)
     content.pack(fill="both", expand=True, padx=10, pady=10)
 
-    level1 = create_level(content, 1)
-    level2 = create_level(content, 2)
-    level3 = create_level(content, 3)
+    title_label = ctk.CTkLabel(
+        content,
+        text="AROGYA HOSPITAL & RESEARCH CENTRE",
+        font=fonts["doctor"]
+                            
+    )
+      
+    inside_label= ctk.CTkLabel(
+        content,
+        text="ICU BED DASHBOARD",
+        font=fonts["specialty"]
+                
+    )
+        
+        
+    title_label.pack(padx=10, pady=10) 
+    
+    inside_label.pack(padx=10)
+
+    level1 = create_level(content, 1, fonts)
+    level2 = create_level(content, 2, fonts)
+    level3 = create_level(content, 3, fonts)
 
     def refresh():
         refresh_dashboard(level1, level2, level3)
