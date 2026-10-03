@@ -113,8 +113,17 @@ def update_occupied(level, bed_type, occupied):
 
 def create_icu_card(parent, title, column, fonts):
     
-    card = ctk.CTkFrame(parent, corner_radius=15, fg_color=ICU_CARD, border_color=ICU_BORDER, border_width=1)
-
+    #card = ctk.CTkFrame(parent, corner_radius=15, fg_color=ICU_CARD, border_color=ICU_BORDER, border_width=1)
+    card = ctk.CTkFrame(
+        parent,
+        width=240,
+        height=300,
+        fg_color=ICU_CARD,
+        border_width=1,
+        border_color=ICU_BORDER,
+        corner_radius=12
+    )
+    card.pack_propagate(False)
     title_label = ctk.CTkLabel(
         card,
         text=title,
@@ -138,21 +147,22 @@ def create_icu_card(parent, title, column, fonts):
 
     total_label = ctk.CTkLabel(
         card,
-        text="Total : 0",
+        text="TOTAL : 0",
         font=fonts["icuinfo"],
         text_color=TOTAL_TEXT
     )
 
     occupied_label = ctk.CTkLabel(
         card,
-        text="Occupied : 0",
+        text="OCCUPIED : 0",
         font=fonts["icuinfo"],
         text_color=OCCUPIED_TEXT
     )
 
     
     title_label.pack(padx=10,pady=(15, 8))
-    available_heading.pack(padx=10, pady=(8, 0))    
+    available_heading.pack(padx=10, pady=(8, 0)) 
+   
     card.grid(
     row=0,
     column=column,
@@ -221,8 +231,8 @@ def refresh_card(card, level, bed_type):
 
     status = get_icu_status(level, bed_type)
     card["available"].configure(text=status["available"])
-    card["total"].configure(text=f"Total : {status['total']}")
-    card["occupied"].configure(text=f"Occupied : {status['occupied']}")    
+    card["total"].configure(text=f"TOTAL : {status['total']}")
+    card["occupied"].configure(text=f"OCCUPIED : {status['occupied']}")    
 
 
 

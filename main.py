@@ -4,6 +4,7 @@ from theme import create_fonts
 from doctors import create_doctors_screen
 from icu import create_icu_screen
 from spotlight import create_spotlight_screen
+from spotlight1 import create_spotlight_screen1
 
 from theme import (
     BG_MAIN    
@@ -34,17 +35,20 @@ page_container.grid_columnconfigure(0, weight=1)
 doctors_page = ctk.CTkFrame(page_container, fg_color=BG_MAIN)
 icu_page = ctk.CTkFrame(page_container)
 spotlight_page = ctk.CTkFrame(page_container)
+spotlight_page1 = ctk.CTkFrame(page_container)
 
 # Same grid position: the pages overlap.
 doctors_page.grid(row=0, column=0, sticky="nsew")
 icu_page.grid(row=0, column=0, sticky="nsew")
 spotlight_page.grid(row=0, column=0, sticky="nsew")
+spotlight_page1.grid(row=0, column=0, sticky="nsew")
 
 
 # Build each screen once.
 create_doctors_screen(doctors_page, fonts)
 refresh_icu = create_icu_screen(icu_page, fonts)
 create_spotlight_screen(spotlight_page)
+create_spotlight_screen1(spotlight_page1)
 
 
 def show_doctors():
@@ -58,6 +62,10 @@ def show_icu():
 def show_spotlight():
     spotlight_page.tkraise()
 
+def show_spotlight1():
+    spotlight_page1.tkraise()
+
+
 
 
 current_page = 0
@@ -70,10 +78,13 @@ def auto_rotate():
     elif current_page == 1:
         show_icu()
 
-    else:
+    elif current_page == 2:
         show_spotlight()
+
+    else:
+        show_spotlight1()
    
-    current_page = (current_page + 1) % 3
+    current_page = (current_page + 1) % 4
 
     main.after(5000, auto_rotate)
 
@@ -100,11 +111,17 @@ icu_button.pack(side="left", padx=10, pady=10)
 
 spotlight_button = ctk.CTkButton(
     navigation,
-    text="DOCTOR'S SPOTLIGHT",
+    text="DOCTOR'S SPOTLIGHT 1",
     command=show_spotlight
 )
 spotlight_button.pack(side="left", padx=10, pady=10)
 
+spotlight_button1 = ctk.CTkButton(
+    navigation,
+    text="DOCTOR'S SPOTLIGHT 2",
+    command=show_spotlight
+)
+spotlight_button1.pack(side="left", padx=10, pady=10)
 
 
 # Default page when the application starts.
